@@ -1,0 +1,208 @@
+mission_controller_node:
+  ros__parameters:
+    cmd_vel_topic: "/cmd_vel"
+    linear_speed: 0.35
+    angular_speed: 0.55
+    forward_duration: 1.6
+    turn_duration: 1.0
+    loops: 1
+    publish_rate: 20.0
+    start_delay_sec: 2.0
+
+waypoint_square_controller_node:
+  ros__parameters:
+    pose_topic: "/player/ground_truth"
+    cmd_vel_topic: "/cmd_vel"
+
+    side_length: 8.0
+    loops: 1
+
+    linear_speed: 0.45
+    max_angular_speed: 0.75
+
+    position_tolerance: 0.55
+    yaw_tolerance: 0.25
+
+    k_linear: 0.45
+    k_angular: 1.40
+
+    publish_rate: 20.0
+    start_delay_sec: 2.0
+
+    x_axis_sign: 1.0
+    y_axis_sign: 1.0
+    angular_sign: 1.0
+
+sensor_monitor_node:
+  ros__parameters:
+    pose_topic: "/player/ground_truth"
+    imu_topic: "/player/imu"
+    status_topic: "/drone/sensor_status"
+    report_period_sec: 1.0
+
+world_setup_node:
+  ros__parameters:
+    service_name: "/minecraft/command"
+    setup_delay_sec: 0.3
+
+
+drone_spawn_node:
+  ros__parameters:
+    service_name: "/minecraft/command"
+    drone_tag: "ros_drone"
+    drone_name: "ROS Drone"
+    entity_type: "minecraft:allay"
+
+    spawn_x: 0.0
+    spawn_y: 8.0
+    spawn_z: 0.0
+
+    setup_delay_sec: 0.3
+    kill_existing: true
+
+
+drone_entity_controller_node:
+  ros__parameters:
+    service_name: "/minecraft/command"
+    drone_tag: "ros_drone"
+
+    target_topic: "/drone/target"
+    pose_topic: "/drone/pose"
+    path_topic: "/drone/path"
+    status_topic: "/drone/controller_status"
+
+    frame_id: "map"
+    update_rate: 8.0
+    speed_blocks_per_sec: 2.0
+    target_tolerance: 0.25
+
+    start_x: 0.0
+    start_y: 8.0
+    start_z: 0.0
+player_camera_follow_node:
+  ros__parameters:
+    service_name: "/minecraft/command"
+    drone_pose_topic: "/drone/pose"
+    camera_status_topic: "/drone/camera_status"
+
+    player_selector: "@p"
+
+    offset_x: -8.0
+    offset_y: 8.0
+    offset_z: -8.0
+
+    follow_rate: 4.0
+    look_at_drone: true
+
+    fixed_yaw: 45.0
+    fixed_pitch: 25.0
+
+    set_spectator_mode: true
+    restore_creative_on_exit: true
+
+
+lidar_processor_node:
+  ros__parameters:
+    pointcloud_topic: "/player/pointcloud"
+    min_distance_topic: "/drone/lidar_min_distance"
+    obstacle_topic: "/drone/obstacle_near"
+    status_topic: "/drone/lidar_status"
+
+    # Default assumption: x is forward, y is lateral, z is vertical.
+    # If the front direction is wrong, change forward_sign to -1.0.
+    forward_axis: "x"
+    lateral_axis: "y"
+    vertical_axis: "z"
+    forward_sign: 1.0
+
+    min_valid_distance: 0.20
+    max_valid_distance: 20.0
+
+    front_lateral_limit: 2.5
+    vertical_min: -1.5
+    vertical_max: 2.5
+
+    obstacle_distance_threshold: 3.0
+
+    process_every_n_messages: 5
+    max_points_to_process: 6000
+    log_period_sec: 1.0
+
+mission_planner_node:
+  ros__parameters:
+    drone_pose_topic: "/drone/pose"
+    goal_topic: "/drone/goal"
+    status_topic: "/drone/status"
+    mission_state_topic: "/drone/mission_state"
+
+    frame_id: "map"
+    planner_rate: 2.0
+    goal_tolerance: 0.75
+
+    home_x: 0.0
+    home_y: 8.0
+    home_z: 0.0
+
+    flight_y: 10.0
+    landing_y: 6.0
+
+    redstone_x: 10.0
+    redstone_z: 0.0
+
+    emerald_x: 10.0
+    emerald_z: 10.0
+
+    lapis_x: 0.0
+    lapis_z: 10.0
+
+    inspect_x: 19.0
+    inspect_y: 10.0
+    inspect_z: 19.0
+
+    inspect_duration_sec: 5.0
+map_builder_node:
+  ros__parameters:
+    map_topic: "/drone/local_map"
+    status_topic: "/drone/map_status"
+
+    frame_id: "map"
+    resolution: 1.0
+
+    min_x: -25.0
+    max_x: 25.0
+    min_z: -25.0
+    max_z: 25.0
+
+    safety_margin_cells: 2
+    publish_rate: 1.0
+
+path_planner_node:
+  ros__parameters:
+    map_topic: "/drone/local_map"
+    pose_topic: "/drone/pose"
+    goal_topic: "/drone/goal"
+
+    planned_path_topic: "/drone/planned_path"
+    target_topic: "/drone/target"
+    status_topic: "/drone/planner_status"
+
+    frame_id: "map"
+    planner_rate: 5.0
+    replan_period_sec: 1.0
+
+    occupied_threshold: 50
+    goal_tolerance: 0.6
+    lookahead_distance: 2.0
+    default_flight_altitude: 10.0
+
+visualizer_node:
+  ros__parameters:
+    frame_id: "map"
+    marker_topic: "/drone/markers"
+    status_topic: "/drone/visualizer_status"
+
+    drone_pose_topic: "/drone/pose"
+    target_topic: "/drone/target"
+    goal_topic: "/drone/goal"
+
+    publish_rate: 2.0

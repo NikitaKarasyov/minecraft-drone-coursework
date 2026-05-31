@@ -1,0 +1,31 @@
+# ROS 2 / colcon
+build/
+install/
+log/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.coverage
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs / bags / backups
+*.log
+*.bag
+*.db3
+rosbag2_*/
+*_backup.tar.gz
+*.tar.gz
+
+# Temporary files
+*.tmp
+*.swp
